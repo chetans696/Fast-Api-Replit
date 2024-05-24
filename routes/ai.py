@@ -2,6 +2,8 @@ from fastapi import APIRouter
 import google.generativeai as genai
 from pydantic import BaseModel
 import random
+import textwrap
+from IPython.display import Markdown
 
 ai = APIRouter()
 GOOGLE_API_KEY = 'AIzaSyClAsekAgQN-88C46GunAQ3_PNyh__3Vvs'
@@ -11,6 +13,10 @@ model = genai.GenerativeModel('gemini-pro')
 
 class Query(BaseModel):
   ques: str
+
+def to_markdown(text):
+  text = text.replace('•', '  *')
+  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
 
 
 @ai.get("/")
@@ -26,8 +32,9 @@ def ask_ai(query: Query):
     print("response ==>>>>", response)
     output = {
       "id": random.randint(1000, 9999),
-      "AI": response.text
+      "AI": to_markdown(response.text)
     }
+    print("Output ==>>", output)
     return output
   except Exception as e:
     print("Error ==>>", e)
