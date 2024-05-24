@@ -3,6 +3,5 @@ uvicorn
 jinja2
 pymongo
 pydantic
-random
 openai
 google.generativeai
