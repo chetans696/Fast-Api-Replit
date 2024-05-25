@@ -30,11 +30,12 @@ def ask_ai(query: Query):
     print("Prompted by user: ", query.ques)
     response = model.generate_content(query.ques or "hi")
     print("response ==>>>>", response)
+    finish_reason = response.candidates[0].finish_reason
+    text = response.text if finish_reason == 1 else ""
     output = {
-      "id": random.randint(1000, 9999),
-      "AI": to_markdown(response.text)
+      "role": "AI",
+      "response": to_markdown(text)
     }
-    print("Output ==>>", output)
     return output
   except Exception as e:
     print("Error ==>>", e)
