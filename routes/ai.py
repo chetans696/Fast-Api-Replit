@@ -14,6 +14,7 @@ model = genai.GenerativeModel('gemini-pro')
 class Query(BaseModel):
   ques: str
 
+
 def to_markdown(text):
   text = text.replace('•', '  *')
   return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
@@ -31,11 +32,8 @@ def ask_ai(query: Query):
     response = model.generate_content(query.ques or "hi")
     print("response ==>>>>", response)
     finish_reason = response.candidates[0].finish_reason
-    text = response.text if finish_reason == 1 else ""
-    output = {
-      "role": "AI",
-      "response": to_markdown(text)
-    }
+    text = response.text if finish_reason == 1 else "Unable to generate response! Please try again."
+    output = {"role": "AI", "response": to_markdown(text), "text": text}
     return output
   except Exception as e:
     print("Error ==>>", e)
